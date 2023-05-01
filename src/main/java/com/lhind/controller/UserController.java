@@ -1,44 +1,51 @@
 package com.lhind.controller;
 
 import com.lhind.model.entity.User;
-import com.lhind.repository.UserRepository;
 import com.lhind.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-@RequestMapping(path = "/employee")
+@RequestMapping(path = "/users")
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
 
-    public UserController(UserService userService, UserRepository userRepository) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userRepository = userRepository;
     }
 
-    @GetMapping()
-    public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok(userService.allUsers());
+    // Create a new user
+    @PostMapping
+    public ResponseEntity<User> createUser(@RequestBody User user) {
+        User savedUser = userService.saveUser(user);
+        return ResponseEntity.created(URI.create("/users/" + savedUser.getId()))
+                .body(savedUser);
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUserById(@PathVariable Long id) {
-        Optional<User> optionalUser = userRepository.findById(id);
-        if (!optionalUser.isPresent()) {
-            return ResponseEntity.notFound().build();
-        }
-        userRepository.deleteById(id);
+    // Get all users
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.allUsers();
+        return ResponseEntity.ok(users);
+    }
+
+    // Update a user by ID
+    @PutMapping("/{userId}")
+    public ResponseEntity<User> updateUser(@RequestBody User user,
+                                           @PathVariable Long userId) {
+        User updatedUser = userService.updateUser(user, userId);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    // Delete a user by ID
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long userId) {
+        userService.deleteUserById(userId);
         return ResponseEntity.noContent().build();
     }
 
-
-    @PostMapping()
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
-        return ResponseEntity.status(201).body(userService.saveUser(user));
-    }
 }
