@@ -21,9 +21,21 @@ public class User {
     @Column(name = "password",nullable = false)
     private String password;
 
-    @Column(name = "role",nullable = false)
-    @Enumerated(value = EnumType.STRING)
-    private RoleEnum role;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "employee_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+    )
+    private List<Role> roles; //Set
+
+    public List<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(List<Role> roles) {
+        this.roles = roles;
+    }
 
     @OneToOne(mappedBy = "user")
     private UserDetails userDetails;
@@ -71,21 +83,15 @@ public class User {
         this.password = password;
     }
 
-    public RoleEnum getRole() {
-        return role;
-    }
-
-    public void setRole(RoleEnum role) {
-        this.role = role;
-    }
-
     @Override
     public String toString() {
         return "User{" +
                 "id=" + id +
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
-                ", role=" + role +
+                ", roles=" + roles +
+                ", userDetails=" + userDetails +
+                ", bookings=" + bookings +
                 '}';
     }
 }

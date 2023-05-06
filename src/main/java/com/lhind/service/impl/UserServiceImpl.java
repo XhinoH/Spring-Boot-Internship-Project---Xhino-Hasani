@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
             user = userOptional.get();
             user.setUsername(userRequest.getUsername());
             user.setPassword(userRequest.getPassword());
-            user.setRole(userRequest.getRole());
             user.setId(userRequest.getId());
         } else {
             // This means that we have to create a new user.
@@ -43,7 +42,6 @@ public class UserServiceImpl implements UserService {
             user.setUsername(userRequest.getUsername());
             user.setPassword(userRequest.getPassword());
             user.setId(userRequest.getId());
-            user.setRole(userRequest.getRole());
         }
         return userRepository.save(user);
     }

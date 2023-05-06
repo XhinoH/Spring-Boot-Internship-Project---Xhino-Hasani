@@ -3,6 +3,7 @@ package com.lhind.controller;
 import com.lhind.model.entity.User;
 import com.lhind.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -27,6 +28,7 @@ public class UserController {
     }
 
     // Get all users
+    @PreAuthorize(value = "hasAnyRole('ROLE_MANAGER')")
     @GetMapping
     public ResponseEntity<List<User>> getAllUsers() {
         List<User> users = userService.allUsers();
