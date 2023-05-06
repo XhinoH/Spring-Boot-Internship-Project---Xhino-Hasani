@@ -1,1 +1,1 @@
-# Spring-JPA-CRUD-examples
+# Spring Boot Java Internship Project.
